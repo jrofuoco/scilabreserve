@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Sci Lab Reserve</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: block;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-gradient-end), var(--primary-gradient-start));
+            color: white;
+            padding: 2rem 1.25rem;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .page-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            margin: 0 0 0.5rem;
+            color: var(--primary-gradient-end);
+            font-size: 2rem;
+        }
+        
+        .stat-card p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .reservations-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .reservation-item {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .reservation-info {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .reservation-info h4 {
+            margin: 0 0 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .reservation-info p {
+            margin: 0.25rem 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .reservation-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        button.secondary {
+            border: 1px solid var(--primary-gradient-end);
+            background: white;
+            color: var(--primary-gradient-end);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        button.secondary:hover {
+            background: var(--primary-gradient-end);
+            color: white;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge.pending-admin {
+            background: #cfe2ff;
+            color: #084298;
+        }
+        
+        .badge.approved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge.rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .badge.returned {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .badge.pending-return {
+            background: #ffeaa7;
+            color: #d63031;
+        }
+        
+        button.success {
+            border: 1px solid #28a745;
+            background: white;
+            color: #28a745;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        button.success:hover {
+            background: #28a745;
+            color: white;
+        }
+        
+        .room-availability {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .room-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .room-card h4 {
+            margin: 0 0 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .room-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .status-indicator.available {
+            background: #28a745;
+        }
+        
+        .status-indicator.occupied {
+            background: #dc3545;
+        }
+        
+        .status-indicator.reserved {
+            background: #ffc107;
+        }
+        
+        .teacher-form {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .form-group input {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .teacher-item {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .teacher-info h4 {
+            margin: 0 0 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .teacher-info p {
+            margin: 0.25rem 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        button.danger {
+            border: 1px solid #dc3545;
+            background: white;
+            color: #dc3545;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        button.danger:hover {
+            background: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="page-shell" style="padding: 0;">
+            <h1>Admin Dashboard</h1>
+            <p style="margin: 0.5rem 0 0; opacity: 0.9;">Manage all laboratory reservations and final approvals</p>
+        </div>
+    </div>
+    
+    <div class="page-shell">
+        <nav class="global-nav">
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </nav>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>0</h3>
+                <p>Total Reservations</p>
+            </div>
+            <div class="stat-card">
+                <h3>0</h3>
+                <p>Pending Admin Review</p>
+            </div>
+            <div class="stat-card">
+                <h3>0</h3>
+                <p>Approved</p>
+            </div>
+            <div class="stat-card">
+                <h3>0</h3>
+                <p>Rejected</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Reservations Pending Admin Review</h2>
+            <div class="reservations-list" id="admin-review-list">
+                <p style="text-align: center; color: #666; padding: 2rem;">No reservations pending admin review.</p>
+            </div>
+        </div>
+        
+        <div class="card" style="margin-top: 1.5rem;">
+            <h2>All Reservations</h2>
+            <div class="reservations-list" id="all-reservations-list">
+                <p style="text-align: center; color: #666; padding: 2rem;">No reservations found.</p>
+            </div>
+        </div>
+        
+        <div class="card" style="margin-top: 1.5rem;">
+            <h2>Resources Returned</h2>
+            <div class="reservations-list" id="returns-list">
+                <p style="text-align: center; color: #666; padding: 2rem;">No resources have been returned yet.</p>
+            </div>
+        </div>
+        
+        <div class="card" style="margin-top: 1.5rem;">
+            <h2>Room Availability</h2>
+            <div class="room-availability" id="room-availability">
+                <!-- Room availability will be loaded here -->
+            </div>
+        </div>
+        
+        <div class="card" style="margin-top: 1.5rem;">
+            <h2>Manage Teachers</h2>
+            <div class="teacher-form">
+                <h3 style="margin-top: 0; margin-bottom: 1rem;">Add New Teacher</h3>
+                <form id="add-teacher-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="teacher-username">Username *</label>
+                            <input type="text" id="teacher-username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher-firstname">First Name *</label>
+                            <input type="text" id="teacher-firstname" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher-lastname">Last Name *</label>
+                            <input type="text" id="teacher-lastname" name="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher-email">Email *</label>
+                            <input type="email" id="teacher-email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher-password">Password *</label>
+                            <input type="password" id="teacher-password" name="password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="primary">Add Teacher</button>
+                </form>
+            </div>
+            
+            <div style="margin-top: 1.5rem;">
+                <h3>Existing Teachers</h3>
+                <div class="reservations-list" id="teachers-list">
+                    <p style="text-align: center; color: #666; padding: 2rem;">No teachers found.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>
+

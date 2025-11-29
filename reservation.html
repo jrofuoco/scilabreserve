@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Reservation - Sci Lab Reserve</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: block;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-gradient-end), var(--primary-gradient-start));
+            color: white;
+            padding: 2rem 1.25rem;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .page-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        .reservation-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.9rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-gradient-end);
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+        
+        button.secondary {
+            border: 2px solid var(--primary-gradient-end);
+            background: white;
+            color: var(--primary-gradient-end);
+            padding: 0.9rem 2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        button.secondary:hover {
+            background: var(--primary-gradient-end);
+            color: white;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid var(--primary-gradient-end);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #1565c0;
+            font-size: 0.9rem;
+        }
+        
+        .reservation-type-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .type-button {
+            padding: 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .type-button:hover {
+            border-color: var(--primary-gradient-end);
+            background: #f0f7ff;
+        }
+        
+        .type-button.selected {
+            border-color: var(--primary-gradient-end);
+            background: var(--primary-gradient-end);
+            color: white;
+        }
+        
+        .type-form-section {
+            display: none;
+        }
+        
+        .type-form-section.active {
+            display: grid;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="page-shell" style="padding: 0;">
+            <h1>New Reservation</h1>
+            <p style="margin: 0.5rem 0 0; opacity: 0.9;">Book a laboratory for your research or experiments</p>
+        </div>
+    </div>
+    
+    <div class="page-shell">
+        <nav class="global-nav">
+            <a href="#" onclick="window.history.back(); return false;">Return</a>
+        </nav>
+        
+        <div class="card">
+            <div class="info-box">
+                <p><strong>Note:</strong> Please select a reservation type and fill in all required fields. Reservations are subject to teacher approval.</p>
+            </div>
+            
+            <form id="reservation-form" class="reservation-form">
+                <input type="hidden" id="reservationType" name="reservationType" value="">
+                
+                <div class="form-group full-width">
+                    <label>Select Reservation Type *</label>
+                    <div class="reservation-type-selector" id="type-selector">
+                        <!-- Type buttons will be loaded here based on user role -->
+                    </div>
+                </div>
+                
+                <!-- Lab Room Form (Teachers Only) -->
+                <div id="lab-room-form" class="type-form-section">
+                    <div class="form-group">
+                        <label for="lab">Laboratory *</label>
+                        <select id="lab" name="lab">
+                            <option value="">Select Laboratory</option>
+                            <optgroup label="Laboratories">
+                                <option value="Lecture Room">Lecture Room</option>
+                                <option value="Chemistry Laboratory">Chemistry Laboratory</option>
+                                <option value="Biology Laboratory">Biology Laboratory</option>
+                                <option value="Physics Laboratory">Physics Laboratory</option>
+                            </optgroup>
+                        
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lab-date">Date *</label>
+                        <input type="date" id="lab-date" name="lab-date">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lab-start-time">Start Time *</label>
+                        <input type="time" id="lab-start-time" name="lab-start-time" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lab-end-time">End Time *</label>
+                        <input type="time" id="lab-end-time" name="lab-end-time" required>
+                    </div>
+                   
+                </div>
+                
+                 <!-- Equipment Form -->
+                <div id="equipment-form" class="type-form-section">
+                    <div class="form-group">
+                        <label for="equipmentName">Equipment Name *</label>
+                        <input type="text" id="equipmentName" name="equipmentName" placeholder="e.g., Microscope, Beam Balance, etc.">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="equipmentQuantity">Quantity *</label>
+                        <input type="number" id="equipmentQuantity" name="equipmentQuantity" min="1" value="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="equipment-date">Date *</label>
+                        <input type="date" id="equipment-date" name="equipment-date">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lab-start-time">Start Time *</label>
+                        <input type="time" id="lab-start-time" name="lab-start-time" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lab-end-time">End Time *</label>
+                        <input type="time" id="lab-end-time" name="lab-end-time" required>
+                    </div>
+                </div>
+
+                <!-- Chemical Form -->
+                <div id="chemical-form" class="type-form-section">
+                    <div class="form-group">
+                        <label for="chemicalName">Chemical Name *</label>
+                        <input type="text" id="chemicalName" name="chemicalName" placeholder="e.g., Sodium Chloride, Hydrochloric Acid, etc.">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="chemicalQuantity">Quantity *</label>
+                        <input type="text" id="chemicalQuantity" name="chemicalQuantity" placeholder="e.g., 500ml, 1kg, etc.">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="chemical-date">Date *</label>
+                        <input type="date" id="chemical-date" name="chemical-date">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lab-start-time">Start Time *</label>
+                        <input type="time" id="lab-start-time" name="lab-start-time" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="safetyNotes">Safety Notes</label>
+                        <textarea id="safetyNotes" name="safetyNotes" placeholder="Any special safety precautions or handling instructions..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Glassware Form -->
+                <div id="glassware-form" class="type-form-section">
+                    <div class="form-group">
+                        <label for="glasswareName">Glassware Name *</label>
+                        <input type="text" id="glasswareName" name="glasswareName" placeholder="e.g., Beaker, Flask, Test Tube, etc.">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="glasswareQuantity">Quantity *</label>
+                        <input type="number" id="glasswareQuantity" name="glasswareQuantity" min="1" value="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="glassware-date">Date *</label>
+                        <input type="date" id="glassware-date" name="glassware-date">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lab-start-time">Start Time *</label>
+                        <input type="time" id="lab-start-time" name="lab-start-time" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lab-end-time">End Time *</label>
+                        <input type="time" id="lab-end-time" name="lab-end-time" required>
+                    </div>
+                </div>
+
+                
+                <!-- Common Fields -->
+                <div class="form-group full-width" id="purpose-field" style="display: none;">
+                    <label for="purpose">Purpose / Description *</label>
+                    <textarea id="purpose" name="purpose" placeholder="Describe the purpose of your reservation..." required></textarea>
+                </div>
+                
+                <div class="form-actions" id="submit-section" style="display: none;">
+                    <button type="button" class="secondary" onclick="window.history.back()">Cancel</button>
+                    <button type="submit" class="primary">Submit Reservation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script src="reservation-form.js"></script>
+</body>
+</html>
+
