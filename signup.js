@@ -11,6 +11,11 @@ if (signupForm) {
         const email = formData.get("email")?.trim();
         const password = formData.get("password");
         const confirmPassword = formData.get("confirmPassword");
+        const roleSelect = document.getElementById('role');
+
+        // 4. Print it to the console
+        console.log("User selected:", roleSelect.value);
+
 
         if (!username || !firstName || !lastName || !email || !password || !confirmPassword) {
             alert("Please fill in all fields.");
@@ -32,7 +37,8 @@ if (signupForm) {
             firstName: firstName,
             lastName: lastName,
             email: email,
-            password: password
+            password: password,
+            role: roleSelect.value
         };
 
         try {

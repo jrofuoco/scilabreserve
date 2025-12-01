@@ -35,6 +35,7 @@ $firstName = $data['firstName'] ?? '';
 $lastName = $data['lastName'] ?? '';
 $email = $data['email'] ?? '';
 $password = $data['password'] ?? '';
+$role = $data['role'] ?? '';
 
 if (empty($username) || empty($firstName) || empty($lastName) || empty($email) || empty($password)) {
     http_response_code(400);
@@ -64,10 +65,10 @@ if ($check_stmt->num_rows > 0) {
 }
 $check_stmt->close();
 
-$insert_sql = "INSERT INTO users (username, first_name, last_name, email, password) VALUES (?, ?, ?, ?, ?)";
+$insert_sql = "INSERT INTO users (username, first_name, last_name, email, password, roles) VALUES (?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($insert_sql);
 
-$stmt->bind_param("sssss", $username, $firstName, $lastName, $email, $hashed_password);
+$stmt->bind_param("ssssss", $username, $firstName, $lastName, $email, $hashed_password, $role);
 
 if ($stmt->execute()) {
     http_response_code(201);
